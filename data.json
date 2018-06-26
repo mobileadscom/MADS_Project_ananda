@@ -1,0 +1,10 @@
+json_data = {
+  "components" : {
+	  "ball": "img/ball.png",
+	  "goal": "img/goal.png",
+	  "grass": "img/grass.png",
+	  "logo": "img/logo.png",
+	  "text": "img/text.png"
+	}
+}
+  
