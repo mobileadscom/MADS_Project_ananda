@@ -13,16 +13,22 @@ var game = {
 				game.touchMechanics.inteval++;
 			}
 
-			if (game.ballMechanics.rolling) {
+			if (game.ballMechanics.rolling && !game.ballMechanics.out) {
 				if (game.ballMechanics.velocity > game.ballMechanics.friction ) {
 					game.objects.ball.x += game.ballMechanics.velocity * Math.cos(game.ballMechanics.rollAngle - Math.PI / 2);
 					game.objects.ball.y += game.ballMechanics.velocity * Math.sin(game.ballMechanics.rollAngle - Math.PI / 2);
+
+					if (game.objects.ball.x < -57 || game.objects.ball.x > 320 || game.objects.ball.y < -57 || game.objects.ball.y > 480) {
+						game.ballMechanics.out = true;
+					  game.restart(1000);
+					}
 				}
 				else {
 					game.ballMechanics.rolling = false;
+					game.ballMechanics.out = true;
+				  game.restart(300);
 				}
 				game.ballMechanics.velocity -= game.ballMechanics.friction;
-				console.log(game.ballMechanics.velocity);
 			}
 		}
 	},
@@ -121,6 +127,7 @@ var game = {
 		friction: 1,
 		rollAngle: 0,
 		rolling: false,
+		out: false,
 		shoot() {
 			var xv = (game.touchMechanics.vPos.x - game.touchMechanics.uPos.x) / game.touchMechanics.inteval;
 			var yv = (game.touchMechanics.vPos.y - game.touchMechanics.uPos.y) / game.touchMechanics.inteval;
@@ -170,22 +177,30 @@ var game = {
     this.ticker = new createjs.Ticker.addEventListener("tick", this.handleTick);
     this.events();
   },
-  restart() {
-	  this.touchMechanics.uPos.x = 0;
-	  this.touchMechanics.uPos.y = 0;
-	  this.touchMechanics.vPos.x = 0;
-	  this.touchMechanics.vPos.y = 0;
-	  this.touchMechanics.touched = false;
-	  this.touchMechanics.inteval = 0;
+  restart(delay) {
+  	var t = 100;
+  	if (typeof delay == 'number') {
+			t = delay;
+  	};
+  	setTimeout(() => {
+  		this.touchMechanics.uPos.x = 0;
+		  this.touchMechanics.uPos.y = 0;
+		  this.touchMechanics.vPos.x = 0;
+		  this.touchMechanics.vPos.y = 0;
+		  this.touchMechanics.touched = false;
+		  this.touchMechanics.inteval = 0;
 
-	  this.ballMechanics.velocity = 0;
-	  this.ballMechanics.rolling = false;
-		
-		this.objects.ball.x = 132;
-		this.objects.ball.y = 360;
+		  this.ballMechanics.velocity = 0;
+		  this.ballMechanics.rolling = false;
+			this.ballMechanics.out = false;
 
-		this.flash.destroyed = false;
-	  this.flash.create();
+			this.objects.ball.x = 132;
+			this.objects.ball.y = 360;
+
+			this.flash.destroyed = false;
+		  this.flash.create();
+		}, t);
+	  
   },
   events() {
   	this.world.on("mousedown", (evt) => {
