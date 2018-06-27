@@ -1,7 +1,8 @@
 var game = {
 	settings: {
-		paused: true
+		paused: true,
 	},
+	goal: false,
 	handleTick() {
 		if (!game.settings.paused) {
 			game.stage.update();
@@ -17,28 +18,54 @@ var game = {
 				if (game.ballMechanics.velocity > game.ballMechanics.friction ) {
 					game.objects.ball.x += game.ballMechanics.velocity * Math.cos(game.ballMechanics.rollAngle);
 					game.objects.ball.y += game.ballMechanics.velocity * Math.sin(game.ballMechanics.rollAngle);
+					game.objects.ball.realX = game.objects.ball.x + 28.35;
+					game.objects.ball.realY = game.objects.ball.y + 28.35;
 
 					if (game.objects.ball.x < -57 || game.objects.ball.x > 320 || game.objects.ball.y < -57 || game.objects.ball.y > 480) {
 						game.ballMechanics.out = true;
 					  game.restart(1000);
 					}
 
-					// hit the goal net
-					if (game.objects.ball.y <= 45 && (game.objects.ball.x > 78 && game.objects.ball.x < 243)) {
-						game.objects.ball.y = 50;
-
-						// var incidentAngle = -game.ballMechanics.rollAngle;
-						game.ballMechanics.rollAngle = -game.ballMechanics.rollAngle;
-						game.ballMechanics.velocity *= 0.1;
-					  console.log(-game.ballMechanics.rollAngle, game.ballMechanics.rollAngle);
-
-
+					//detect wall collision
+					if (game.objects.ball.y < 145) {
+						for (var w = 0; w < game.goalWall.length; w++) {
+							var xDist = game.objects.ball.realX - game.goalWall[w].realX;
+							var yDist = game.objects.ball.realY - game.goalWall[w].realY;
+						
+							if (Math.sqrt( xDist * xDist + yDist * yDist) <= 33.35) {
+								if (!game.ballMechanics.bounced) {
+									game.ballMechanics.bounced = true;
+									var adjacentAngle = Math.atan2(yDist, xDist);
+									game.ballMechanics.rollAngle = adjacentAngle;
+									  game.ballMechanics.velocity *= 0.5;
+								}
+								else {
+									game.ballMechanics.bounced = false;
+								}
+							}
+					
+						}
+					}
+					// goal
+					if (game.objects.ball.realX > 75 && game.objects.ball.realX < 243 && game.objects.ball.realY < 110 && game.objects.ball.realY > 60) {
+						if (!game.goal) {
+							console.log('goal');
+							game.goal = true;
+						}
+						
 					}
 				}
 				else {
-					game.ballMechanics.rolling = false;
-					// game.ballMechanics.out = true;
-				  // game.restart(300);
+					if (!game.goal) {
+						game.ballMechanics.rolling = false;
+						game.ballMechanics.out = true;
+					  game.restart(300);
+					}
+					else {
+						console.log('win');
+						game.settings.paused = true;
+					}
+					
 				}
 				game.ballMechanics.velocity -= game.ballMechanics.friction;
 			}
@@ -139,6 +166,7 @@ var game = {
 		friction: 1,
 		rollAngle: 0,
 		rolling: false,
+		bounced: false,
 		out: false,
 		shoot() {
 			var xv = (game.touchMechanics.vPos.x - game.touchMechanics.uPos.x) / game.touchMechanics.inteval;
@@ -148,8 +176,7 @@ var game = {
 			this.rolling = true;
 		}
 	},
-	goalWall: {
-	},
+	goalWall: [],
   init() {
   	console.log('start game initialization');
     this.stage = new createjs.Stage('canvas');
@@ -171,6 +198,8 @@ var game = {
   	this.objects.ball.scaleY = 0.7;
   	this.objects.ball.x = 132;
   	this.objects.ball.y = 360;
+  	this.objects.ball.realX = 132 + 28.35;
+  	this.objects.ball.realY = 360 + 28.35;
   	this.objects.text.x = 70;
   	this.objects.text.y = 230;
   	for (var o in this.objects) {
@@ -181,15 +210,44 @@ var game = {
 
   	this.flash.create();
 
-  	this.goalWall.left = new createjs.Shape();
-  	this.goalWall.left.graphics.f('red').rr(68, 0 , 10, 105, 0);
-  	this.goalWall.mid = new createjs.Shape();
-  	this.goalWall.mid.graphics.f('blue').rr(68, 0 , 175, 45, 0);
-  	this.goalWall.right = new createjs.Shape();
-  	this.goalWall.right.graphics.f('green').rr(243, 0 , 10, 105, 0);
-  	this.world.addChild(this.goalWall.left);
-  	this.world.addChild(this.goalWall.mid);
-  	this.world.addChild(this.goalWall.right);
+    for (var w = 0; w < 3; w++) {
+    	/*var wall = new createjs.Shape();
+			wall.graphics.f('white').dc(75, 50 + w * 25, 5);
+			wall.realX = 75;
+			wall.realY = 50 + w * 25;
+			this.world.addChild(wall);
+			this.goalWall.push(wall);*/
+			this.goalWall.push({
+				realX: 75,
+				realY: 50 + w * 25
+			});
+    }
+
+    for (var w = 0; w < 3; w++) {
+    	/*var wall = new createjs.Shape();
+			wall.graphics.f('white').dc(243, 50 + w * 25, 5);
+			wall.realX = 243;
+			wall.realY = 50 + w * 25;
+			this.world.addChild(wall);
+			this.goalWall.push(wall);*/
+			this.goalWall.push({
+				realY: 243,
+				realY: 50 + w * 25
+			});
+    }
+
+    for (var w = 0; w < 5; w++) {
+    	/*var wall = new createjs.Shape();
+			wall.graphics.f('red').dc(110 + w * 25, 50, 5);
+			wall.realX = 110 + w * 25;
+			wall.realY = 50;
+			this.world.addChild(wall);
+			this.goalWall.push(wall);*/
+			this.goalWall.push({
+				realX: 110 + w * 25,
+				realY: 50
+			});
+    }
   	console.log('object initialization complete');
 
   	//start game
