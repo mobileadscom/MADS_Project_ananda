@@ -30,7 +30,7 @@ var game = {
 	    }, 100);
 		},
 		fileLoad(event) {
-			console.log(event.result);
+			// console.log(event.result);
 			game.objects[event.item.id] = new createjs.Bitmap(event.result);
 		},
 		loadComplete() {
@@ -72,10 +72,19 @@ var game = {
 							this.timestate = 0;
 						}
 					}
-					
 				}
 			}
-		}
+		},
+		destroy() {
+			if (!game.objects.flash.destroyed) {
+				for (var f = 0; f < game.objects.flash.length; f++) {
+					game.world.removeChild(game.objects.flash[f]);
+				}
+				this.destroyed = true;
+				console.log('flash destroyed');
+			}
+		},
+		destroyed: false
 	},
 	objects: {
 	},
@@ -90,8 +99,6 @@ var game = {
     //Create Game World
     this.world = new createjs.Container();
     this.stage.addChild(this.world);
-
-    //start 
 
     console.log('game initialization complete');
   },
@@ -112,7 +119,15 @@ var game = {
 
   	this.flash.create();
   	console.log('object initialization complete');
+
+  	//start game
   	this.start();
+  	this.world.on("mousedown", (evt) => {
+		  // console.log(evt);
+		  if (!this.flash.destroyed) {
+		  	this.flash.destroy();
+		  }
+  	});
   },
   start() {
   	createjs.Ticker.framerate = 30;
