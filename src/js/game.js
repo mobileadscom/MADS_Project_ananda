@@ -23,15 +23,22 @@ var game = {
 					  game.restart(1000);
 					}
 
+					// hit the goal net
 					if (game.objects.ball.y <= 45 && (game.objects.ball.x > 78 && game.objects.ball.x < 243)) {
-						// console.log(game.ballMechanics.rollAngle);
+						game.objects.ball.y = 50;
+
+						// var incidentAngle = -game.ballMechanics.rollAngle;
+						game.ballMechanics.rollAngle = -game.ballMechanics.rollAngle;
+						game.ballMechanics.velocity *= 0.1;
+					  console.log(-game.ballMechanics.rollAngle, game.ballMechanics.rollAngle);
+
 
 					}
 				}
 				else {
 					game.ballMechanics.rolling = false;
-					game.ballMechanics.out = true;
-				  game.restart(300);
+					// game.ballMechanics.out = true;
+				  // game.restart(300);
 				}
 				game.ballMechanics.velocity -= game.ballMechanics.friction;
 			}
@@ -139,7 +146,6 @@ var game = {
 			this.velocity = Math.sqrt(xv * xv + yv * yv);
 			this.rollAngle = Math.atan2((game.touchMechanics.vPos.y - game.touchMechanics.uPos.y), (game.touchMechanics.vPos.x - game.touchMechanics.uPos.x));
 			this.rolling = true;
-			console.log(this.rollAngle);
 		}
 	},
 	goalWall: {
