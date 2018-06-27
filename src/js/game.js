@@ -180,6 +180,24 @@ var game = {
     this.ticker = new createjs.Ticker.addEventListener("tick", this.handleTick);
     this.events();
   },
+  restart() {
+	  this.touchMechanics.uPos.x = 0;
+	  this.touchMechanics.uPos.y = 0;
+	  this.touchMechanics.vPos.x = 0;
+	  this.touchMechanics.vPos.y = 0;
+	  this.touchMechanics.touched = false;
+	  this.touchMechanics.inteval = 0;
+
+	  this.ballMechanics.velocity.x = 0;
+	  this.ballMechanics.velocity.y = 0;
+	  this.ballMechanics.rolling = false;
+		
+		this.objects.ball.x = 132;
+		this.objects.ball.y = 360;
+
+		this.flash.destroyed = false;
+	  this.flash.create();
+  },
   events() {
   	this.world.on("mousedown", (evt) => {
 			// console.log(evt);
@@ -191,20 +209,6 @@ var game = {
   		this.touchMechanics.uPos.x = evt.stageX;
   		this.touchMechanics.uPos.y = evt.stageY;
   	});
-
-  	// this.world.on('pressmove', (evt) => {
-  	// 	var xDist = evt.stageX - this.touchMechanics.uPos.x;
-  	// 	var yDist = evt.stageY - this.touchMechanics.uPos.y;
-  	// 	xDist = xDist < 0 ? -xDist : xDist;
-  	// 	yDist = yDist < 0 ? -yDist : yDist;
-
-			// if (xDist > 5 || yDist > 5 ) {
-			// 	this.touchMechanics.touched = true;
-			// 	// this.touchMechanics.inteval = 0;
-			// }
-			
-			// console.log(evt.stageX, evt.stageY);
-  	// });
 
   	this.world.on('pressup', (evt) => {
 			this.touchMechanics.vPos.x = evt.stageX;
