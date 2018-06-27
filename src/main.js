@@ -15,11 +15,11 @@ class AdUnit extends Mads {
   render() {
     console.log('data', this.data);
 
-    this.custTracker = ['http://www.tracker2.com?type={{rmatype}}&tt={{rmatt}}', 'http://www.tracker.com?type={{rmatype}}'];
+    // this.custTracker = ['http://www.tracker2.com?type={{rmatype}}&tt={{rmatt}}', 'http://www.tracker.com?type={{rmatype}}'];
 
-    this.tracker('CTR', 'test');
+    // this.tracker('CTR', 'test');
 
-    this.linkOpener('http://www.google.com');
+    // this.linkOpener('http://www.google.com');
 
     return `
       <div class="container" id="ad-container">

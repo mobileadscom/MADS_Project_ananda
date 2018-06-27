@@ -8,6 +8,32 @@ var game = {
 			for (var f = 0; f < game.objects.flash.length; f++) {
 				game.objects.flash[f].flash();
 			}
+
+			if (game.touchMechanics.touched) {
+				game.touchMechanics.inteval++;
+			}
+
+			if (game.ballMechanics.rolling) {
+			  var modulusX = game.ballMechanics.velocity.x < 0 ? -game.ballMechanics.velocity.x : game.ballMechanics.velocity.x;
+				var modulusY = game.ballMechanics.velocity.y < 0 ? -game.ballMechanics.velocity.y : game.ballMechanics.velocity.y;
+				
+				if (modulusX > game.ballMechanics.friction / 2) {
+					game.ballMechanics.velocity.x = game.ballMechanics.velocity.x < 0 ? game.ballMechanics.velocity.x + game.ballMechanics.friction : game.ballMechanics.velocity.x - game.ballMechanics.friction;
+				  game.objects.ball.x += game.ballMechanics.velocity.x;
+				}
+
+				if (modulusY > game.ballMechanics.friction / 2) {
+				  game.ballMechanics.velocity.y = game.ballMechanics.velocity.y < 0 ? game.ballMechanics.velocity.y + game.ballMechanics.friction : game.ballMechanics.velocity.y - game.ballMechanics.friction;
+				  game.objects.ball.y += game.ballMechanics.velocity.y;
+				}
+
+			  // console.log(modulusX, modulusY);
+			  console.log(game.objects.ball.x, game.objects.ball.y);
+				
+				if (modulusX <= game.ballMechanics.friction && modulusY <= game.ballMechanics.friction ) {
+					game.ballMechanics.rolling = false;
+				}
+			}
 		}
 	},
 	preload: {
@@ -88,6 +114,31 @@ var game = {
 	},
 	objects: {
 	},
+	touchMechanics: {
+		uPos: {
+			x: 0,
+			y: 0
+		},
+		vPos: {
+			x: 0,
+			y: 0
+		},
+		touched: false,
+		inteval: 0
+	},
+	ballMechanics: {
+		velocity: {
+			x: 0,
+			y: 0
+		},
+		friction: 1,
+		rolling: false,
+		shoot() {
+			this.velocity.x = (game.touchMechanics.vPos.x - game.touchMechanics.uPos.x) / game.touchMechanics.inteval;
+			this.velocity.y = (game.touchMechanics.vPos.y - game.touchMechanics.uPos.y) / game.touchMechanics.inteval;
+			this.rolling = true;
+		}
+	},
   init() {
   	console.log('start game initialization');
     this.stage = new createjs.Stage('canvas');
@@ -122,16 +173,44 @@ var game = {
 
   	//start game
   	this.start();
-  	this.world.on("mousedown", (evt) => {
-		  // console.log(evt);
-		  if (!this.flash.destroyed) {
-		  	this.flash.destroy();
-		  }
-  	});
   },
   start() {
   	createjs.Ticker.framerate = 30;
   	this.settings.paused = false;
     this.ticker = new createjs.Ticker.addEventListener("tick", this.handleTick);
+    this.events();
+  },
+  events() {
+  	this.world.on("mousedown", (evt) => {
+			// console.log(evt);
+			if (!this.flash.destroyed) {
+		  	this.flash.destroy();
+			}
+			this.touchMechanics.touched = true;
+			this.touchMechanics.inteval = 0;
+  		this.touchMechanics.uPos.x = evt.stageX;
+  		this.touchMechanics.uPos.y = evt.stageY;
+  	});
+
+  	// this.world.on('pressmove', (evt) => {
+  	// 	var xDist = evt.stageX - this.touchMechanics.uPos.x;
+  	// 	var yDist = evt.stageY - this.touchMechanics.uPos.y;
+  	// 	xDist = xDist < 0 ? -xDist : xDist;
+  	// 	yDist = yDist < 0 ? -yDist : yDist;
+
+			// if (xDist > 5 || yDist > 5 ) {
+			// 	this.touchMechanics.touched = true;
+			// 	// this.touchMechanics.inteval = 0;
+			// }
+			
+			// console.log(evt.stageX, evt.stageY);
+  	// });
+
+  	this.world.on('pressup', (evt) => {
+			this.touchMechanics.vPos.x = evt.stageX;
+			this.touchMechanics.vPos.y = evt.stageY;
+			this.touchMechanics.touched = false;
+			this.ballMechanics.shoot();
+  	});
   }
 };
