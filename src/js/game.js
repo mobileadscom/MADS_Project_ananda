@@ -14,25 +14,15 @@ var game = {
 			}
 
 			if (game.ballMechanics.rolling) {
-			  var modulusX = game.ballMechanics.velocity.x < 0 ? -game.ballMechanics.velocity.x : game.ballMechanics.velocity.x;
-				var modulusY = game.ballMechanics.velocity.y < 0 ? -game.ballMechanics.velocity.y : game.ballMechanics.velocity.y;
-				
-				if (modulusX > game.ballMechanics.friction / 2) {
-					game.ballMechanics.velocity.x = game.ballMechanics.velocity.x < 0 ? game.ballMechanics.velocity.x + game.ballMechanics.friction : game.ballMechanics.velocity.x - game.ballMechanics.friction;
-				  game.objects.ball.x += game.ballMechanics.velocity.x;
+				if (game.ballMechanics.velocity > game.ballMechanics.friction ) {
+					game.objects.ball.x += game.ballMechanics.velocity * Math.cos(game.ballMechanics.rollAngle - Math.PI / 2);
+					game.objects.ball.y += game.ballMechanics.velocity * Math.sin(game.ballMechanics.rollAngle - Math.PI / 2);
 				}
-
-				if (modulusY > game.ballMechanics.friction / 2) {
-				  game.ballMechanics.velocity.y = game.ballMechanics.velocity.y < 0 ? game.ballMechanics.velocity.y + game.ballMechanics.friction : game.ballMechanics.velocity.y - game.ballMechanics.friction;
-				  game.objects.ball.y += game.ballMechanics.velocity.y;
-				}
-
-			  // console.log(modulusX, modulusY);
-			  console.log(game.objects.ball.x, game.objects.ball.y);
-				
-				if (modulusX <= game.ballMechanics.friction && modulusY <= game.ballMechanics.friction ) {
+				else {
 					game.ballMechanics.rolling = false;
 				}
+				game.ballMechanics.velocity -= game.ballMechanics.friction;
+				console.log(game.ballMechanics.velocity);
 			}
 		}
 	},
@@ -127,15 +117,15 @@ var game = {
 		inteval: 0
 	},
 	ballMechanics: {
-		velocity: {
-			x: 0,
-			y: 0
-		},
+		velocity: 0,
 		friction: 1,
+		rollAngle: 0,
 		rolling: false,
 		shoot() {
-			this.velocity.x = (game.touchMechanics.vPos.x - game.touchMechanics.uPos.x) / game.touchMechanics.inteval;
-			this.velocity.y = (game.touchMechanics.vPos.y - game.touchMechanics.uPos.y) / game.touchMechanics.inteval;
+			var xv = (game.touchMechanics.vPos.x - game.touchMechanics.uPos.x) / game.touchMechanics.inteval;
+			var yv = (game.touchMechanics.vPos.y - game.touchMechanics.uPos.y) / game.touchMechanics.inteval;
+			this.velocity = Math.sqrt(xv * xv + yv * yv);
+			this.rollAngle = Math.atan2((game.touchMechanics.vPos.y - game.touchMechanics.uPos.y), (game.touchMechanics.vPos.x - game.touchMechanics.uPos.x)) + Math.PI / 2;
 			this.rolling = true;
 		}
 	},
@@ -188,8 +178,7 @@ var game = {
 	  this.touchMechanics.touched = false;
 	  this.touchMechanics.inteval = 0;
 
-	  this.ballMechanics.velocity.x = 0;
-	  this.ballMechanics.velocity.y = 0;
+	  this.ballMechanics.velocity = 0;
 	  this.ballMechanics.rolling = false;
 		
 		this.objects.ball.x = 132;
