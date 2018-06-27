@@ -22,6 +22,10 @@ var game = {
 						game.ballMechanics.out = true;
 					  game.restart(1000);
 					}
+
+					if (game.objects.ball.y <= 45 && (game.objects.ball.x > 78 && game.objects.ball.x < 243)) {
+						// console.log(game.ballMechanics.rollAngle);
+					}
 				}
 				else {
 					game.ballMechanics.rolling = false;
@@ -134,7 +138,10 @@ var game = {
 			this.velocity = Math.sqrt(xv * xv + yv * yv);
 			this.rollAngle = Math.atan2((game.touchMechanics.vPos.y - game.touchMechanics.uPos.y), (game.touchMechanics.vPos.x - game.touchMechanics.uPos.x)) + Math.PI / 2;
 			this.rolling = true;
+			console.log(this.rollAngle);
 		}
+	},
+	goalWall: {
 	},
   init() {
   	console.log('start game initialization');
@@ -166,6 +173,16 @@ var game = {
   	this.world.setChildIndex( this.objects.goal, this.world.getNumChildren()-1);
 
   	this.flash.create();
+
+  	this.goalWall.left = new createjs.Shape();
+  	this.goalWall.left.graphics.f('red').rr(68, 0 , 10, 105, 0);
+  	this.goalWall.mid = new createjs.Shape();
+  	this.goalWall.mid.graphics.f('blue').rr(68, 0 , 175, 45, 0);
+  	this.goalWall.right = new createjs.Shape();
+  	this.goalWall.right.graphics.f('green').rr(243, 0 , 10, 105, 0);
+  	this.world.addChild(this.goalWall.left);
+  	this.world.addChild(this.goalWall.mid);
+  	this.world.addChild(this.goalWall.right);
   	console.log('object initialization complete');
 
   	//start game
