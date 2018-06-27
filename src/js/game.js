@@ -15,8 +15,8 @@ var game = {
 
 			if (game.ballMechanics.rolling && !game.ballMechanics.out) {
 				if (game.ballMechanics.velocity > game.ballMechanics.friction ) {
-					game.objects.ball.x += game.ballMechanics.velocity * Math.cos(game.ballMechanics.rollAngle - Math.PI / 2);
-					game.objects.ball.y += game.ballMechanics.velocity * Math.sin(game.ballMechanics.rollAngle - Math.PI / 2);
+					game.objects.ball.x += game.ballMechanics.velocity * Math.cos(game.ballMechanics.rollAngle);
+					game.objects.ball.y += game.ballMechanics.velocity * Math.sin(game.ballMechanics.rollAngle);
 
 					if (game.objects.ball.x < -57 || game.objects.ball.x > 320 || game.objects.ball.y < -57 || game.objects.ball.y > 480) {
 						game.ballMechanics.out = true;
@@ -25,6 +25,7 @@ var game = {
 
 					if (game.objects.ball.y <= 45 && (game.objects.ball.x > 78 && game.objects.ball.x < 243)) {
 						// console.log(game.ballMechanics.rollAngle);
+
 					}
 				}
 				else {
@@ -136,7 +137,7 @@ var game = {
 			var xv = (game.touchMechanics.vPos.x - game.touchMechanics.uPos.x) / game.touchMechanics.inteval;
 			var yv = (game.touchMechanics.vPos.y - game.touchMechanics.uPos.y) / game.touchMechanics.inteval;
 			this.velocity = Math.sqrt(xv * xv + yv * yv);
-			this.rollAngle = Math.atan2((game.touchMechanics.vPos.y - game.touchMechanics.uPos.y), (game.touchMechanics.vPos.x - game.touchMechanics.uPos.x)) + Math.PI / 2;
+			this.rollAngle = Math.atan2((game.touchMechanics.vPos.y - game.touchMechanics.uPos.y), (game.touchMechanics.vPos.x - game.touchMechanics.uPos.x));
 			this.rolling = true;
 			console.log(this.rollAngle);
 		}
