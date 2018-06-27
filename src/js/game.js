@@ -3,9 +3,11 @@ var game = {
 		paused: true
 	},
 	handleTick() {
-		// console.log('running');
 		if (!game.settings.paused) {
 			game.stage.update();
+			for (var f = 0; f < game.objects.flash.length; f++) {
+				game.objects.flash[f].flash();
+			}
 		}
 	},
 	preload: {
@@ -37,6 +39,44 @@ var game = {
 			game.initObjects();
 		}
 	},
+	flash: {
+		create() {
+			game.objects.flash = [];
+			for (var f = 0; f < 3; f++) {
+				game.objects.flash[f] = new createjs.Shape();
+				game.objects.flash[f].graphics.f('white').dc(0, 0, 50);
+				game.objects.flash[f].alpha = 0;
+				game.objects.flash[f].scaleX = 0.1;
+				game.objects.flash[f].scaleY = 0.1;
+				game.world.addChild(game.objects.flash[f]);
+				game.objects.flash[f].x = 160;
+				game.objects.flash[f].y = 387;
+				game.objects.flash[f].timestate = f * -8;
+				game.objects.flash[f].flash = function() {
+					this.timestate++
+					if (this.timestate <= 15 && this.timestate >= 1 ) {
+						if (this.timestate == 1) {
+							this.alpha = 0.9;
+						}
+						else {
+							this.alpha -= 0.04;
+							this.scaleX += 0.06;
+							this.scaleY += 0.06;
+						}
+					}
+					else {
+						this.alpha = 0;
+						this.scaleY = 0.1;
+						this.scaleX = 0.1;
+						if (this.timestate > 59) {
+							this.timestate = 0;
+						}
+					}
+					
+				}
+			}
+		}
+	},
 	objects: {
 	},
   init() {
@@ -58,8 +98,10 @@ var game = {
   initObjects() {
   	this.objects.logo.x = 180;
   	this.objects.logo.y = 390;
-  	this.objects.ball.x = 120;
-  	this.objects.ball.y = 320;
+  	this.objects.ball.scaleX = 0.7;
+  	this.objects.ball.scaleY = 0.7;
+  	this.objects.ball.x = 132;
+  	this.objects.ball.y = 360;
   	this.objects.text.x = 70;
   	this.objects.text.y = 230;
   	for (var o in this.objects) {
@@ -67,6 +109,8 @@ var game = {
   	}
   	this.world.setChildIndex( this.objects.ball, this.world.getNumChildren()-1);
   	this.world.setChildIndex( this.objects.goal, this.world.getNumChildren()-1);
+
+  	this.flash.create();
   	console.log('object initialization complete');
   	this.start();
   },
