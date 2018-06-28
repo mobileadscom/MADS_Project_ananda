@@ -8,10 +8,13 @@ class AdUnit extends Mads {
 
     this.loadJS('https://code.createjs.com/createjs-2015.11.26.min.js').then(() => {
       console.log('easeljs loaded');
+      const video = window.document.getElementById('video');
+      const game = window.document.getElementById('canvas');
+      video.addEventListener('click', () => {
+        this.linkOpener('https://www.ananda.com.mm/');
+      });
       window.game.init();
       window.game.win = () => {
-        const video = window.document.getElementById('video');
-        const game = window.document.getElementById('canvas');
         game.style.display = 'none';
         video.style.display = 'block';
         video.play();
