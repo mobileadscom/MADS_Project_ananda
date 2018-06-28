@@ -12,6 +12,8 @@ class AdUnit extends Mads {
       const game = window.document.getElementById('canvas');
       video.addEventListener('click', () => {
         this.linkOpener('https://www.ananda.com.mm/');
+        this.tracker('CTR', 'link');
+        video.pause();
       });
       window.game.init();
       window.game.win = () => {
