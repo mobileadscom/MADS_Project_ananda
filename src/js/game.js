@@ -15,6 +15,7 @@ var game = {
 			}
 
 			if (game.ballMechanics.rolling && !game.ballMechanics.out) {
+				// ball roll
 				if (game.ballMechanics.velocity > game.ballMechanics.friction ) {
 					game.objects.ball.x += game.ballMechanics.velocity * Math.cos(game.ballMechanics.rollAngle);
 					game.objects.ball.y += game.ballMechanics.velocity * Math.sin(game.ballMechanics.rollAngle);
@@ -22,8 +23,15 @@ var game = {
 					game.objects.ball.realY = game.objects.ball.y + 28.35;
 
 					if (game.objects.ball.x < -57 || game.objects.ball.x > 320 || game.objects.ball.y < -57 || game.objects.ball.y > 480) {
-						game.ballMechanics.out = true;
-					  game.restart(1000);
+						if (!game.goal) {
+							game.ballMechanics.rolling = false;
+							game.ballMechanics.out = true;
+						  game.restart(1000);
+						}
+						else {
+							game.win();
+							game.settings.paused = true;
+						}
 					}
 
 					//detect wall collision
@@ -37,7 +45,7 @@ var game = {
 									game.ballMechanics.bounced = true;
 									var adjacentAngle = Math.atan2(yDist, xDist);
 									game.ballMechanics.rollAngle = adjacentAngle;
-									  game.ballMechanics.velocity *= 0.5;
+									game.ballMechanics.velocity *= 0.5;
 								}
 								else {
 									game.ballMechanics.bounced = false;
@@ -62,7 +70,7 @@ var game = {
 					  game.restart(300);
 					}
 					else {
-						console.log('win');
+						game.win();
 						game.settings.paused = true;
 					}
 					
@@ -150,16 +158,16 @@ var game = {
 	objects: {
 	},
 	touchMechanics: {
-		uPos: {
+		uPos: { //initial touch position
 			x: 0,
 			y: 0
 		},
-		vPos: {
+		vPos: { //release touch position
 			x: 0,
 			y: 0
 		},
 		touched: false,
-		inteval: 0
+		inteval: 0 //time interval between touch and release
 	},
 	ballMechanics: {
 		velocity: 0,
@@ -167,7 +175,7 @@ var game = {
 		rollAngle: 0,
 		rolling: false,
 		bounced: false,
-		out: false,
+		out: false, //out of field
 		shoot() {
 			var xv = (game.touchMechanics.vPos.x - game.touchMechanics.uPos.x) / game.touchMechanics.inteval;
 			var yv = (game.touchMechanics.vPos.y - game.touchMechanics.uPos.y) / game.touchMechanics.inteval;
@@ -179,7 +187,7 @@ var game = {
 	goalWall: [],
   init() {
   	console.log('start game initialization');
-    this.stage = new createjs.Stage('canvas');
+    this.stage = new createjs.Stage('canvas'); //'canvas' is the id of <canvas>
     createjs.Touch.enable(this.stage);
     
     //Preload Files
@@ -297,10 +305,13 @@ var game = {
   	});
 
   	this.world.on('pressup', (evt) => {
-			this.touchMechanics.vPos.x = evt.stageX;
-			this.touchMechanics.vPos.y = evt.stageY;
-			this.touchMechanics.touched = false;
-			this.ballMechanics.shoot();
+		this.touchMechanics.vPos.x = evt.stageX;
+		this.touchMechanics.vPos.y = evt.stageY;
+		this.touchMechanics.touched = false;
+		this.ballMechanics.shoot();
   	});
+  },
+  win() {
+		console.log('win');
   }
 };

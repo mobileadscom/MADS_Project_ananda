@@ -3,7 +3,11 @@
     height: 480px;
 }
 
-#canvas {
+#canvas, #video {
 	width: 320px;
 	height: 480px;
+}
+
+#video {
+	display: none;
 }

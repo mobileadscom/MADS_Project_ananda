@@ -9,6 +9,13 @@ class AdUnit extends Mads {
     this.loadJS('https://code.createjs.com/createjs-2015.11.26.min.js').then(() => {
       console.log('easeljs loaded');
       window.game.init();
+      window.game.win = () => {
+        const video = window.document.getElementById('video');
+        const game = window.document.getElementById('canvas');
+        game.style.display = 'none';
+        video.style.display = 'block';
+        video.play();
+      };
     });
   }
 
@@ -24,6 +31,10 @@ class AdUnit extends Mads {
     return `
       <div class="container" id="ad-container">
         <canvas id="canvas" width="320" height="480"></canvas>
+        <video width="320" height="480" id="video">
+          <source src="https://rmarepo.richmediaads.com/3354/custom/worldCup/video/win.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
       </div>
     `;
   }
