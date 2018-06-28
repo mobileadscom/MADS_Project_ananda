@@ -293,7 +293,6 @@ var game = {
 	  
   },
   events() {
-  	/* // Scrapped this coz pressup sometimes not sensitive
   	this.world.on("mousedown", (evt) => {
 			// console.log(evt);
 			if (!this.flash.destroyed) {
@@ -308,48 +307,6 @@ var game = {
   	this.world.on('pressup', (evt) => {
 			this.touchMechanics.vPos.x = evt.stageX;
 			this.touchMechanics.vPos.y = evt.stageY;
-			this.touchMechanics.touched = false;
-			window.ad.tracker('E', 'shoot');
-			console.log('shoot!');
-			this.ballMechanics.shoot();
-  	});*/
-
-		var canvas = document.getElementById('canvas');
-    var rect = canvas.getBoundingClientRect();
-
-  	canvas.addEventListener('touchstart', (e) => {
-  		e.preventDefault();
-      if (!this.flash.destroyed) {
-		  	this.flash.destroy();
-			}
-			this.touchMechanics.touched = true;
-			this.touchMechanics.inteval = 0;
-  		this.touchMechanics.uPos.x = e.touches[0].clientX - rect.left;
-  		this.touchMechanics.uPos.y = e.touches[0].clientY - rect.top;
-    });
-
-  	canvas.addEventListener('mousedown', (e) => {
-      if (!this.flash.destroyed) {
-		  	this.flash.destroy();
-			}
-			this.touchMechanics.touched = true;
-			this.touchMechanics.inteval = 0;
-  		this.touchMechanics.uPos.x = e.clientX - rect.left;
-  		this.touchMechanics.uPos.y = e.clientY - rect.top;
-  	});
-
-  	canvas.addEventListener('touchend', (e) => {
-			this.touchMechanics.vPos.x = e.changedTouches[0].clientX - rect.left;
-			this.touchMechanics.vPos.y = e.changedTouches[0].clientY - rect.top;
-			this.touchMechanics.touched = false;
-			window.ad.tracker('E', 'shoot');
-			console.log('shoot!');
-			this.ballMechanics.shoot();
-  	});
-
-  	canvas.addEventListener('mouseup', (e) => {
-	  	this.touchMechanics.vPos.x = e.clientX - rect.left;
-			this.touchMechanics.vPos.y = e.clientY - rect.top;
 			this.touchMechanics.touched = false;
 			window.ad.tracker('E', 'shoot');
 			console.log('shoot!');
