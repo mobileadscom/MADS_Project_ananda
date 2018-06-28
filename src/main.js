@@ -47,7 +47,7 @@ class AdUnit extends Mads {
       const video = window.document.getElementById('video');
       const game = window.document.getElementById('canvas');
       video.addEventListener('click', () => {
-        this.linkOpener('https://www.ananda.com.mm/');
+        this.linkOpener('https://www.ananda.com.mm/?utm_source=AdsMy_Display&utm_medium=Banner&utm_campaign=World_Cup_Top_Up&utm_content=Rich_Media');
         this.tracker('CTR', 'link');
         video.pause();
       });
