@@ -3,8 +3,8 @@
   "version": "2.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "set NODE_ENV=production & webpack -p",
-    "start": "set NODE_ENV=development & webpack-dev-server --open"
+    "build": "NODE_ENV=production webpack -p",
+    "start": "NODE_ENV=development webpack-dev-server --open"
   },
   "repository": "git@github.com:mobileadscom/MADS_Project_ananda.git",
   "author": "Jeff Paltera <jeff@mobileads.com>",

@@ -157,6 +157,8 @@ var game = {
 	},
 	objects: {
 	},
+	sounds:{
+	},
 	touchMechanics: {
 		uPos: { //initial touch position
 			x: 0,
@@ -215,6 +217,7 @@ var game = {
   	}
   	this.world.setChildIndex( this.objects.ball, this.world.getNumChildren()-1);
   	this.world.setChildIndex( this.objects.goal, this.world.getNumChildren()-1);
+		this.sounds.restart = new Audio('https://rmarepo.richmediaads.com/3354/custom/worldCup/sound/restart.mp3');
 
   	this.flash.create();
 
@@ -289,6 +292,7 @@ var game = {
 
 			this.flash.destroyed = false;
 		  this.flash.create();
+		  this.sounds.restart.play();
 		}, t);
 	  
   },
